@@ -18,6 +18,58 @@ struct KS {
 	bool isAdded = false;
 };
 
+void saveToFile(const Pipe& truba, const KS& station, const string& filename) {
+	ofstream file(filename);
+	if (file.is_open()) {
+		file << "Pipe" << endl;
+		file << truba.name << endl;
+		file << truba.length << endl;
+		file << truba.diametr << endl;
+		file << truba.check << endl;
+		file << truba.isAdded << endl;
+
+		file << "KS" << endl;
+		file << station.name2 << endl;
+		file << station.KC << endl;
+		file << station.KCV << endl;
+		file << station.isAdded << endl;
+
+		file.close();
+		cout << "Данные успешно сохранены в файл: " << filename << endl;
+	}
+	else {
+		cout << "Ошибка! не удалось открыть файл для записи." << endl;
+	}
+}
+
+void FileLoad(Pipe& truba, KS& station, const string& filename) {
+	ifstream file(filename);
+	if (file.is_open()) {
+		string type;
+		while (file >> type) {
+			if (type == "Pipe") {
+				file.ignore(); 
+				getline(file, truba.name);
+				file >> truba.length;
+				file >> truba.diametr;
+				file >> truba.check;
+				file >> truba.isAdded;
+			}
+			else if (type == "KS") {
+				file.ignore(); 
+				getline(file, station.name2);
+				file >> station.KC;
+				file >> station.KCV;
+				file >> station.isAdded;
+			}
+		}
+		file.close();
+		cout << "Данные успешно загружены из файла: " << filename << endl;
+	}
+	else {
+		cout << "Ошибка! не удалось открыть файл для чтения." << endl;
+	}
+}
 
 int main() {
 	setlocale(LC_ALL, "RU");
@@ -25,6 +77,7 @@ int main() {
 	Pipe truba;
 	KS station;
 	int chosen = 0;
+	string filename = "data.txt";
 
 	while (true) { 
 		cout << "МЕНЮ КНОПОК: '1' - Добавить трубу, '2' - Добавить КС , '3' -  Просмотр всех объектов, '4' - Редактировать трубу, '5' - Редактировать КС, '6' -  Сохранить, '7' - Загрузить, '0' - Выход. " << endl;
@@ -175,6 +228,12 @@ int main() {
 		else if (chosen == 0) {
 			cout << "Выход из программы." << endl;
 			break;
+		}
+		else if (chosen == 6) {
+			saveToFile(truba, station, filename);
+		}
+		else if (chosen == 7) {
+			FileLoad(truba, station, filename);
 		}
 	}
 
